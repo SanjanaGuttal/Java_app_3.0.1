@@ -78,7 +78,6 @@ pipeline{
             steps{
                 script{
                     dir('target'){
-                    //sh 'cd target'
                         withCredentials([usernamePassword(
                             credentialsId: "jfrog",
                             usernameVariable: "USER",
