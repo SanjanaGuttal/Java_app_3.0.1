@@ -77,13 +77,15 @@ pipeline{
          when { expression {  params.action == 'create' } }
             steps{
                 script{
-                    sh 'cd target'
-                    withCredentials([usernamePassword(
-                        credentialsId: "jfrog",
-                        usernameVariable: "USER",
-                        passwordVariable: "PASS"
-                    )])
-                    sh 'echo "curl -X PUT -u '$USER' -p '$PASS' -T *.jar http://18.144.125.83:8081/artifactory/example-repo-local/"'
+                    dir('target'){
+                    //sh 'cd target'
+                        withCredentials([usernamePassword(
+                            credentialsId: "jfrog",
+                            usernameVariable: "USER",
+                            passwordVariable: "PASS"
+                        )])
+                        sh 'echo "curl -X PUT -u '$USER' -p '$PASS' -T *.jar http://18.144.125.83:8081/artifactory/example-repo-local/"'
+                    }
                 }
             }
         }
