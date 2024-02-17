@@ -73,29 +73,6 @@ pipeline{
                }
             }
         }
-        stage('Connect to Jfrog'){
-         when { expression {  params.action == 'create' } }
-            steps{
-                script{
-                    dir('target'){
-                        rtServer (
-                            id: 'Artifactory-1',
-                            url: 'http://18.144.125.83:8081/artifactory',
-                                // If you're using username and password:
-                            //username: 'user',
-                            //password: 'password',
-                                // If you're using Credentials ID:
-                                credentialsId: 'jfrog-connection',
-                                // If Jenkins is configured to use an http proxy, you can bypass the proxy when using this Artifactory server:
-                                bypassProxy: true,
-                                // Configure the connection timeout (in seconds).
-                                // The default value (if not configured) is 300 seconds: 
-                                //timeout: 300
-                        )
-                    }
-                }
-            }
-        }
         stage('Docker Image Build'){
          when { expression {  params.action == 'create' } }
             steps{
@@ -112,6 +89,14 @@ pipeline{
                    
                    dockerImageScan("${params.ImageName}","${params.ImageTag}","${params.DockerHubUser}")
                }
+            }
+        }
+        stage ('Pushing Jfrog'){
+          when { expression {  params.action == 'create' } }
+          steps{
+            script{
+                 sh 'curl -X PUT -u admin:Sanju123! -T  /var/lib/jenkins/workspace/java-3.0.1/target/kubernetes-configmap-reload-0.0.1-SNAPSHOT.jar "http://1http://13.57.224.5:8082/artifactory/example-repo-local/kubernetes-configmap-reload-0.0.1-SNAPSHOT.jar"'
+                }
             }
         }
         stage('Docker Image Push : DockerHub '){
